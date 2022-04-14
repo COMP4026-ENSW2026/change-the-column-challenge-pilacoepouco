@@ -19,10 +19,10 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::get('/users', function(){
+Route::get('/users', function () {
     return App\Models\User::all();
 });
 
 // Route::group('v1', function(){
-    Route::resource('pets', PetsController::class);
+Route::resource('pets', PetsController::class);
 // });
