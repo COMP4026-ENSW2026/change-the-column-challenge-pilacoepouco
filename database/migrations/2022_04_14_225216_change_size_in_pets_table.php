@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Pet;
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
@@ -14,10 +15,42 @@ class ChangeSizeInPetsTable extends Migration
      */
     public function up()
     {
-        DB::statement("ALTER TABLE pets MODIFY COLUMN size ENUM('XS', 'SM', 'M', 'L', 'LG', 'XL', 'm', 'xl')");
-        // Schema::table('pets', function (Blueprint $table) {
-        //     $table->enum('size', ['XS', 'SM', 'M', 'L', 'LG', 'XL', 'm', 'xl'])->change();
-        // });
+        $pets = Pet::all()->map(function (Pet $pet) {
+            $pet->size = strtoupper($pet->size);
+            $pet->save();
+            return $pet;
+        });
+
+        $pet_nomenclatura = $pets->whereIn('size', ["SMALL", "LARGE", "MEDIUM"]);
+        $pet_nomenclatura = $pet_nomenclatura->map(function (Pet $pet) {
+            if ($pet->size == "LARGE")
+                $pet->size = "L";
+            else if ($pet->size == "MEDIUM")
+                $pet->size = "M";
+            else if ($pet->size == "SMALL")
+                $pet->size = "SM";
+            $pet->save();
+
+            return $pet;
+        });
+        Schema::table('pets', function (Blueprint $table) {
+            $table->enum('size2', ['XS', 'SM', 'S', 'M', 'L', 'LG', 'XL'])->nullable();
+        });
+
+        $pets = Pet::all()->map(function (Pet $pet) {
+            $pet->size2 = $pet->size;
+            $pet->save();
+            return $pet;
+        });
+
+        Schema::table('pets', function ($table) {
+            $table->dropColumn('size');
+        });
+        Schema::table('pets', function ($table) {
+            $table->renameColumn('size2', 'size');
+        });
+        
+        //small , large , medium
     }
 
     /**
