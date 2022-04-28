@@ -44,12 +44,12 @@ class User extends Authenticatable
         'email_verified_at' => 'datetime',
     ];
 
-    public function setNameAttribute($value){
-        return Str::camel($value);
-    }
+    // public function setNameAttribute($value){
+    //     return Str::camel($value);
+    // }
 
-    public function getNameAttribute($value){
-        return Str::camel($value);
-    }
+    // public function getNameAttribute($value){
+    //     return Str::camel($value);
+    // }
 
 }

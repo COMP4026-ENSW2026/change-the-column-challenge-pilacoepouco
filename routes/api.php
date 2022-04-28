@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\PetsController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,6 +24,7 @@ Route::get('/users', function () {
     return App\Models\User::all();
 });
 
-// Route::group('v1', function(){
-Route::resource('pets', PetsController::class);
-// });
+Route::prefix('auth')->group(function () {
+    Route::post('/login', [UserController::class, "login"]);
+    Route::post('/signIn', [UserController::class, "signIn"]);
+});
